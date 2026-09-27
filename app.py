@@ -1,24 +1,29 @@
 # ============================================================
-# Anti-Fraud SMS Detection App
-# Two fine-tuned models: binary classification + scam type
+# Anti-Fraud SMS Detector (Placeholder Version)
+# Uses pre-trained models so the UI can be tested before
+# fine-tuning is complete.
 # ============================================================
 import streamlit as st
 from transformers import pipeline
 
+
 # -----------------------------------------------------------
 # Function: load_models
-# Purpose: Load and cache both fine-tuned models
+# Purpose: Load placeholder models (replace with your fine-tuned
+#          models once training is done)
 # -----------------------------------------------------------
 @st.cache_resource(show_spinner=False)
 def load_models():
-    """Load both fine-tuned models from Hugging Face Hub."""
+    """Load placeholder models for UI testing."""
+    # Placeholder binary classifier (spam vs ham)
     binary_classifier = pipeline(
         "text-classification",
-        model="your-username/anti-fraud-binary",
+        model="mrm8488/bert-tiny-finetuned-sms-spam-detection",
     )
+    # Placeholder multi-class classifier (temporary)
     type_classifier = pipeline(
         "text-classification",
-        model="your-username/anti-fraud-type",
+        model="distilbert-base-uncased-finetuned-sst-2-english",
     )
     return binary_classifier, type_classifier
 
@@ -30,7 +35,11 @@ def load_models():
 def analyze_sms(text, binary_classifier, type_classifier):
     """Return binary result and, if fraud, scam type."""
     binary_result = binary_classifier(text)[0]
-    is_fraud = binary_result["label"].lower() in ["spam", "label_1", "1"]
+    label = binary_result["label"].upper()
+
+    # The placeholder model uses LABEL_0 / LABEL_1
+    # Adjust this logic when you swap in your own model
+    is_fraud = label in ["LABEL_1", "SPAM", "FRAUD"]
 
     result = {
         "is_fraud": is_fraud,
@@ -126,8 +135,11 @@ def main():
     with st.expander("🔧 Technical Details"):
         st.markdown("""
         **Two Pipelines**:
-        1. `text-classification` (binary): your-username/anti-fraud-binary
-        2. `text-classification` (multi-class): your-username/anti-fraud-type
+        1. `text-classification` (binary): mrm8488/bert-tiny-finetuned-sms-spam-detection
+        2. `text-classification` (multi-class): distilbert-base-uncased-finetuned-sst-2-english
+
+        **Note**: These are placeholder models. Replace them with your own
+        fine-tuned models once training is complete.
 
         **Flow**: `SMS input` → `Binary check` → `Scam type check` → `Result`
         """)
